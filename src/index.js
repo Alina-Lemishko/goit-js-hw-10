@@ -18,6 +18,8 @@ refs.input.addEventListener('input', debounce(handlerInputSearch, DEBOUNCE_DELAY
 function handlerInputSearch(e) {
   countryApiService.country = e.target.value.toLowerCase().trim();
 
+  if (countryApiService.country === "") return;
+
   countryApiService.fetchCountries().then(appendCountriesMarkup).catch(error => Notiflix.Notify.failure("Oops, there is no country with that name"))
 }
 
