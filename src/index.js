@@ -1,19 +1,20 @@
+//Imports
 import Notiflix from 'notiflix';
 import debounce from 'lodash.debounce';
 import CountryApiService from './js/fetch-countries'
+import getRefs from './js/getRefs';
 import './css/styles.css';
 
-
+// Variables
+const refs = getRefs();
 const DEBOUNCE_DELAY = 300;
-
 const countryApiService = new CountryApiService();
 
-const input = document.querySelector('#search-box');
-const list = document.querySelector('.country-list')
-const countryInfo = document.querySelector('.country-info')
+// Listener
+refs.input.addEventListener('input', debounce(handlerInputSearch, DEBOUNCE_DELAY));
 
-input.addEventListener('input', debounce(handlerInputSearch, DEBOUNCE_DELAY));
 
+// Functions
 function handlerInputSearch(e) {
   countryApiService.country = e.target.value.toLowerCase().trim();
 
@@ -35,7 +36,7 @@ function appendCountriesMarkup(data) {
 function markupCountryList(array) {
   const markup = array.map(({ name, flags }) => `<li> <img class="img_flag" src="${flags.svg}" alt="${name.official}"> ${name.common}</li>`).join('');
     
-  list.innerHTML = markup;
+  refs.list.innerHTML = markup;
 }
 
 function markupCountryInfo(arr) {
@@ -47,14 +48,15 @@ function markupCountryInfo(arr) {
       <li>Languages: ${Object.values(languages)}</li>
     </ul>`).join('');
     
-  countryInfo.innerHTML = markup;
+  refs.countryInfo.innerHTML = markup;
 }
 
 function resetCountryList() {
-  list.innerHTML = '';
-  countryInfo.innerHTML = ''; 
+  refs.list.innerHTML = '';
+  refs.countryInfo.innerHTML = ''; 
 }
 
+//Notify init
 Notiflix.Notify.init({
   timeout: 1000,
 });
