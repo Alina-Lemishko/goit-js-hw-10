@@ -1,10 +1,12 @@
+const BASE_URL = 'https://restcountries.com';
+
 export default class CountryApiService {
   constructor() {
     this.name = '';
   }
 
   fetchCountries() {
-    return fetch(`https://restcountries.com/v3.1/name/${this.name}?fields=name,capital,population,flags,languages`)
+    return fetch(`${BASE_URL}/v3.1/name/${this.name}?fields=name,capital,population,flags,languages`)
       .then(response => {
         if (!response.ok) {
          throw new Error(response.status);

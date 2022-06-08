@@ -18,7 +18,7 @@ refs.input.addEventListener('input', debounce(handlerInputSearch, DEBOUNCE_DELAY
 function handlerInputSearch(e) {
   countryApiService.country = e.target.value.toLowerCase().trim();
 
-  if (countryApiService.country === "") return;
+  if (!countryApiService.country) return;
 
   countryApiService.fetchCountries().then(appendCountriesMarkup).catch(error => Notiflix.Notify.failure("Oops, there is no country with that name"))
 }
@@ -26,13 +26,17 @@ function handlerInputSearch(e) {
 function appendCountriesMarkup(data) {
   resetCountryList();
 
+   if (data.length > 10) {
+    Notiflix.Notify.info("Too many matches found. Please enter a more specific name.")
+   }
+  
   if (data.length >= 2 && data.length <= 10) {
     markupCountryList(data)
-  } else if (data.length === 1) {
-    markupCountryInfo(data)
-  } else {
-    rejected
   }
+  
+  if (data.length === 1) {
+    markupCountryInfo(data)
+  } 
 }
 
 function markupCountryList(array) {
@@ -60,5 +64,5 @@ function resetCountryList() {
 
 //Notify init
 Notiflix.Notify.init({
-  timeout: 1000,
+  timeout: 2000,
 });
