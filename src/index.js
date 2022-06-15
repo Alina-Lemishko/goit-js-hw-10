@@ -15,12 +15,20 @@ refs.input.addEventListener('input', debounce(handlerInputSearch, DEBOUNCE_DELAY
 
 
 // Functions
-function handlerInputSearch(e) {
+async function handlerInputSearch(e) {
   countryApiService.country = e.target.value.toLowerCase().trim();
-
-  if (!countryApiService.country) return;
-
-  countryApiService.fetchCountries().then(appendCountriesMarkup).catch(error => Notiflix.Notify.failure("Oops, there is no country with that name"))
+  
+  if (!countryApiService.country) resetCountryList();
+  
+  try {
+    const getCountries = await countryApiService.fetchCountries();
+    const appendMarkup = await appendCountriesMarkup(getCountries)
+    return appendMarkup;    
+  } catch (error) {
+    Notiflix.Notify.failure("Oops, there is no country with that name")
+  }
+    
+    // .then(appendCountriesMarkup).catch(error => Notiflix.Notify.failure("Oops, there is no country with that name"))
 }
 
 function appendCountriesMarkup(data) {
@@ -51,7 +59,7 @@ function markupCountryInfo(arr) {
       <li><img class="img_flag" src="${flags.svg}" alt="${name.official}"> ${name.common}</li>
       <li>Capital: ${capital}</li>
       <li>Population: ${population}</li>
-      <li>Languages: ${Object.values(languages)}</li>
+      <li>Languages: ${Object.values(languages).join(', ')}</li>
     </ul>`).join('');
     
   refs.countryInfo.innerHTML = markup;

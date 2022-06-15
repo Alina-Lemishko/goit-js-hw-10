@@ -5,13 +5,18 @@ export default class CountryApiService {
     this.name = '';
   }
 
-  fetchCountries() {
-    return fetch(`${BASE_URL}/v3.1/name/${this.name}?fields=name,capital,population,flags,languages`)
-      .then(response => {
-        if (!response.ok) {
+  async fetchCountries() {
+    try {
+      const response = await fetch(`${BASE_URL}/v3.1/name/${this.name}?fields=name,capital,population,flags,languages`);
+      const json = await response.json();
+      if (!response.ok) {
          throw new Error(response.status);
-        }
-        return response.json()});
+       }
+      return json;
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   get country() {
